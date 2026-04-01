@@ -1,0 +1,540 @@
+body {
+  margin: 0;
+  background: #1e1e1e;
+  overflow: auto;
+    font-family: sans-serif;
+  background-image: url('./img/bg.png');
+  background-repeat: repeat;
+  background-size: 1280px 1280px; /* 調整背景比例為小尺寸 */
+}
+
+.node {
+  width: 300px;
+  height: 180px;
+  background: #2d2d2d;
+  position: absolute;
+  color: white;
+  text-align: center;
+  padding-top: 30px;
+  cursor: move;
+  z-index: 10; /* 確保比 svg 高 */
+    user-select: none; /* 防止拖動時選文字 */
+
+}
+.node img {
+  pointer-events: none;
+  user-select: none; /* 防止選取圖片 */
+  display: block; /* 去掉下方空隙 */
+  width: 100%;
+  height: 100%;
+}
+
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+}
+
+path {
+  fill: none;
+  stroke: white;
+  stroke-width: 2;
+  stroke-dasharray: 2 2;
+  animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+
+#node1 {
+  background-image: url('./img/win1.png');
+  background-size: cover;     /* 讓圖片覆蓋整個 div */
+  background-position: center; /* 圖片置中 */
+  background-repeat: no-repeat; /* 不重複平鋪 */
+  border: none;               /* 如果不想要邊框可以移除 */
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  cursor: move;
+  border: none;
+  /* 不設寬高，讓 img 自己決定 */
+}
+#node1 img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+
+
+#node2 {
+  background-image: url('./img/win2.png');
+  background-size: contain; /* 確保圖片完整顯示且不變形 */
+  background-position: center; /* 圖片置中 */
+  background-repeat: no-repeat; /* 不重複平鋪 */
+  width: auto; /* 自動調整寬度 */
+  height: auto; /* 自動調整高度 */
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  cursor: move;
+}
+#node2 img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+
+
+#node3 {
+  background-image: url('./img/win3.png');
+  background-size: cover;
+  background-position: center center; /* 確保圖片完全置中 */
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  margin: 0; /* 移除空隙 */
+  padding: 0; /* 移除空隙 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden; /* 確保子元素不會溢出 */
+}
+
+#node3 img {
+  
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+#node3 img:not(.whalev-image-popup) {
+  pointer-events: none;
+}
+
+/* 修正 shiny 特效動畫問題 */
+#node3:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-45deg);
+  animation: shiny 2s linear infinite; /* 確保動畫正常運作 */
+}
+
+@keyframes shiny {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.node-wrapper {
+  position: relative;
+}
+
+
+/* 滑鼠 hover node1 時顯示 info-menu */
+.node-wrapper:hover .info-menu {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 修正滑鼠懸浮在 node1 上時顯示 info-menu 的問題 */
+#node1:hover .info-menu {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.info-menu {
+  position: absolute;
+  left: calc(100% + 10px); /* 緊貼 node1 的右側，並留出 10px 間距 */
+  width: 200px;
+  height: auto;
+  background-color: #3f4040;
+  color: #9e9f9e;
+  border: 1px solid #9e9f9e;
+  padding-left:10px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9999; /* 設定最高層級 */
+  text-align: left; /* 調整 info-menu 文字置左 */
+}
+
+/* 調整 node3 中 whale.webp 的大小 */
+#node3 .whale-image {
+  padding-left: 100px;
+  width: 80%;
+  height: auto;
+  object-fit: contain; /* 確保圖片完整顯示且不變形 */
+}
+/* shiny effect for any node with .shiny class */
+.shiny {
+  position: relative;
+  overflow: hidden;
+  color: #fff; /* 先設定文字顏色，或你想要的底色 */
+  user-select: none;
+  cursor: pointer;
+}
+
+.shiny::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: shine 2s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+  100% {
+    left: 125%;
+  }
+}
+
+/* 移除四芒星或閃光效果 */
+#node3:hover::before {
+  content: none;
+  animation: none;
+}
+
+@keyframes sparkle {
+  /* 移除 sparkle 動畫 */
+}
+
+
+.node {
+  width: 300px;
+  height: 180px;
+  background: #2d2d2d;
+  position: absolute;
+  color: white;
+  border: #9e9f9e;
+  text-align: center;
+  padding-top: 30px;
+  cursor: move;
+  z-index: 10; /* 確保比 svg 高 */
+    user-select: none; /* 防止拖動時選文字 */
+
+}
+
+
+
+#node4 {
+  background-image: url('./img/win4.png');
+  background-size: cover;
+  background-position: center center; /* 確保圖片完全置中 */
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  margin: 0; /* 移除空隙 */
+  padding: 0; /* 移除空隙 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden; /* 確保子元素不會溢出 */
+}
+
+#node4 img {
+  
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 修正 shiny 特效動畫問題 */
+#node4:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-45deg);
+  animation: shiny 2s linear infinite; /* 確保動畫正常運作 */
+}
+
+@keyframes shiny {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+#node4 .lightning-image {
+  padding-left: 100px;
+  width: 80%;
+  height: auto;
+  object-fit: contain; /* 確保圖片完整顯示且不變形 */
+  margin-top: -20px; /* 往上移動 20px */
+}
+
+#node5 {
+  background-image: url('./img/win5.png');
+  background-size: cover;
+  background-position: center center; /* 確保圖片完全置中 */
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  margin: 0; /* 移除空隙 */
+  padding: 0; /* 移除空隙 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden; /* 確保子元素不會溢出 */
+}
+
+#node5 img {
+  
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 修正 shiny 特效動畫問題 */
+#node5:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-45deg);
+  animation: shiny 2s linear infinite; /* 確保動畫正常運作 */
+}
+
+@keyframes shiny {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+#node5 .flower-image {
+  padding-left: 80px;
+  width: 80%;
+  height: auto;
+  object-fit: contain; /* 確保圖片完整顯示且不變形 */
+  margin-top: -25px; /* 往上移動 20px */
+
+}
+
+#node6 {
+  background-image: url('./img/win6.png');
+  background-size: cover;
+  background-position: center center; /* 確保圖片完全置中 */
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  margin: 0; /* 移除空隙 */
+  padding: 0; /* 移除空隙 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden; /* 確保子元素不會溢出 */
+}
+
+#node6 img {
+  
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 修正 shiny 特效動畫問題 */
+#node6:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-45deg);
+  animation: shiny 2s linear infinite; /* 確保動畫正常運作 */
+}
+
+@keyframes shiny {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+#node6 .subtext-image {
+  padding-left: 80px;
+  width: 70%;
+  height: auto;
+  object-fit: contain; /* 確保圖片完整顯示且不變形 */
+  margin-top: -40px;
+}
+
+#node7 {
+  background-image: url('./img/win7.png');
+  background-size: cover;
+  background-position: center center; /* 確保圖片完全置中 */
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  margin: 0; /* 移除空隙 */
+  padding: 0; /* 移除空隙 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden; /* 確保子元素不會溢出 */
+}
+
+#node7 img {
+  
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 修正 shiny 特效動畫問題 */
+#node7:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-45deg);
+  animation: shiny 2s linear infinite; /* 確保動畫正常運作 */
+}
+
+@keyframes shiny {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+#node7 .bird-image {
+  padding-left: 80px;
+  width: 70%;
+  height: auto;
+  object-fit: contain; /* 確保圖片完整顯示且不變形 */
+  margin-top: -90px;
+}
+
+#node8 {
+  background-image: url('./img/win8.png');
+  background-size: cover;
+  background-position: center center; /* 確保圖片完全置中 */
+  background-repeat: no-repeat;
+  width: 100vw;
+  height: 100vh;
+  margin: 0; /* 移除空隙 */
+  padding: 0; /* 移除空隙 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden; /* 確保子元素不會溢出 */
+}
+
+#node8 img {
+  
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100vw; /* 防止超出視窗 */
+  max-height: 100vh;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 修正 shiny 特效動畫問題 */
+#node8:hover::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transform: skewX(-45deg);
+  animation: shiny 2s linear infinite; /* 確保動畫正常運作 */
+}
+
+@keyframes shiny {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+#node8 .kitty-image {
+  padding-left: 80px;
+  width: 70%;
+  height: auto;
+  object-fit: contain; /* 確保圖片完整顯示且不變形 */
+  margin-top: -40px;
+}

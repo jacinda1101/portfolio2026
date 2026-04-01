@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>yu_portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+
+
+</head>
+<body>
+        <div id="node1" class="node" style="top: 60px; left: 40px;">
+  <div class="info-menu">
+    <p>姓名：黃郁芬</p>
+    <p>性別：女</p>
+    <p>出生年月日：2002/11/01</p>
+    <p>語言：中文、英文</p>
+    <p>畢業於國立臺灣藝術大學</p>
+  </div>
+</div>
+    <div class="node" id="node2" style="width:550px; height: 130px; top: 300px; left: 150px;"></div>
+    <div class="node" id="node3" style="width:580px; height: 325px; top: 500px; left: 40px;">
+        <img src="./img/whale.webp" alt="Whale" class="whale-image">
+      </div>  <div class="node" id="node4" style="width:580px; height: 325px; top: 480px; left: 700px;">
+         <img src="./img/lightning.webp" alt="lightning" class="lightning-image">
+      </div>
+  <div class="node" id="node5" style="width:580px; height: 325px; top: 880px; left: 100px;">
+    <img src="./img/flower.webp" alt="flower" class="flower-image">
+  </div>
+  <div class="node" id="node6" style="width:580px; height: 325px; top: 900px; left: 700px;">
+    <img src="./img/subtext.webp" alt="subtext" class="subtext-image">
+  </div>
+  <div class="node" id="node7" style="width:580px; height: 325px; top: 1250px; left: 300px;">
+    <img src="./img/bird.webp" alt="bird" class="bird-image">
+  </div>
+    <div class="node" id="node8" style="width:580px; height: 325px; top: 1600px; left: 500px;">
+    <img src="./img/kitty.webp" alt="kitty" class="kitty-image">
+  </div>
+  
+
+  <!-- SVG Curve Lines -->
+  <svg id="svg-lines"></svg>
+
+  <script>
+    const nodes = document.querySelectorAll('.node');
+
+    // 拖曳功能
+    nodes.forEach(node => {
+      let offsetX, offsetY, isDragging = false;
+
+      node.addEventListener('mousedown', e => {
+        isDragging = true;
+        offsetX = e.clientX - node.offsetLeft;
+        offsetY = e.clientY - node.offsetTop;
+        node.style.zIndex = 1000;
+      });
+
+      document.addEventListener('mousemove', e => {
+        if (isDragging) {
+          node.style.left = `${e.clientX - offsetX}px`;
+          node.style.top = `${e.clientY - offsetY}px`;
+          drawCurves();
+        }
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+        node.style.zIndex = '';
+      });
+    });
+
+    const connections = [
+      ['node1', 'node2'],
+      ['node2', 'node3'],
+      ['node2', 'node4'],
+      ['node2', 'node5'],
+      ['node2', 'node6'],
+      ['node2', 'node7'],
+    ];
+
+
+    function getCenter(el) {
+      return {
+        x: el.offsetLeft + el.offsetWidth / 2,
+        y: el.offsetTop + el.offsetHeight / 2,
+      };
+    }
+
+    function drawCurves() {
+      const svg = document.getElementById('svg-lines');
+      svg.innerHTML = ''; // clear
+
+      connections.forEach(([fromId, toId]) => {
+        const from = document.getElementById(fromId);
+        const to = document.getElementById(toId);
+
+        const p1 = getCenter(from);
+        const p2 = getCenter(to);
+        const dx = Math.abs(p2.x - p1.x) * 0.5;
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+// Cubic Bezier Path
+const d = `
+  M ${p1.x},${p1.y}
+  C ${p1.x + dx},${p1.y} ${p2.x - dx},${p2.y} ${p2.x},${p2.y}
+`;
+
+path.setAttribute('d', d);
+path.setAttribute('fill', 'none');
+path.setAttribute('stroke', 'white');
+path.setAttribute('stroke-width', '2');
+path.setAttribute('stroke-dasharray', '2 2');
+path.style.animation = 'dash 1s linear infinite';
+
+svg.appendChild(path);
+        });
+        }
+
+    drawCurves();
+
+    const node1 = document.getElementById('node1');
+const infoMenu = node1.querySelector('.info-menu');
+
+node1.addEventListener('mouseover', () => {
+  infoMenu.style.display = 'block';
+});
+
+node1.addEventListener('mouseout', () => {
+  infoMenu.style.display = 'none';
+});
+
+// 初始化 info-menu 隱藏
+infoMenu.style.display = 'none';
+const node3 = document.getElementById('node3');
+
+node3.addEventListener('click', () => {
+  const popupContainer = document.createElement('div');
+  popupContainer.style.position = 'fixed';
+  popupContainer.style.top = '50%';
+  popupContainer.style.left = '50%';
+  popupContainer.style.transform = 'translate(-50%, -50%)';
+  popupContainer.style.zIndex = '10000';
+
+  const popupImage = document.createElement('img');
+  popupImage.src = './img/whalev2.webp';
+  popupImage.style.maxWidth = '100%';
+  popupImage.style.maxHeight = '100%';
+  popupImage.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  popupImage.style.border = '1px solid #9e9f9e'; // 新增圖片邊框
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'X';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.backgroundColor = '#564d77'; // 修改 XX 按鈕的底色
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.padding = '5px 10px';
+  closeButton.style.cursor = 'pointer';
+
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(popupContainer);
+  });
+
+  popupContainer.appendChild(popupImage);
+  popupContainer.appendChild(closeButton);
+  document.body.appendChild(popupContainer);
+});
+
+
+const node4 = document.getElementById('node4');
+
+node4.addEventListener('click', () => {
+  const popupContainer = document.createElement('div');
+  popupContainer.style.position = 'fixed';
+  popupContainer.style.top = '50%';
+  popupContainer.style.left = '50%';
+  popupContainer.style.transform = 'translate(-50%, -50%)';
+  popupContainer.style.zIndex = '10000';
+
+  const popupImage = document.createElement('img');
+  popupImage.src = './img/lightningv2.webp';
+  popupImage.style.maxWidth = '100%';
+  popupImage.style.maxHeight = '100%';
+  popupImage.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  popupImage.style.border = '1px solid #9e9f9e'; // 新增圖片邊框
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'X';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.backgroundColor = '#564d77';
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.padding = '5px 10px';
+  closeButton.style.cursor = 'pointer';
+
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(popupContainer);
+  });
+
+  popupContainer.appendChild(popupImage);
+  popupContainer.appendChild(closeButton);
+  document.body.appendChild(popupContainer);
+});
+
+
+const node5 = document.getElementById('node5');
+
+node5.addEventListener('click', () => {
+  const popupContainer = document.createElement('div');
+  popupContainer.style.position = 'fixed';
+  popupContainer.style.top = '50%';
+  popupContainer.style.left = '50%';
+  popupContainer.style.transform = 'translate(-50%, -50%)';
+  popupContainer.style.zIndex = '10000';
+
+  const popupImage = document.createElement('img');
+  popupImage.src = './img/flowerv2.webp';
+  popupImage.style.maxWidth = '100%';
+  popupImage.style.maxHeight = '100%';
+  popupImage.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  popupImage.style.border = '1px solid #9e9f9e'; // 新增圖片邊框
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'X';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.backgroundColor = '#564d77';
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.padding = '5px 10px';
+  closeButton.style.cursor = 'pointer';
+
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(popupContainer);
+  });
+
+  popupContainer.appendChild(popupImage);
+  popupContainer.appendChild(closeButton);
+  document.body.appendChild(popupContainer);
+});
+
+
+const node6 = document.getElementById('node6');
+
+node6.addEventListener('click', () => {
+  const popupContainer = document.createElement('div');
+  popupContainer.style.position = 'fixed';
+  popupContainer.style.top = '50%';
+  popupContainer.style.left = '50%';
+  popupContainer.style.transform = 'translate(-50%, -50%)';
+  popupContainer.style.zIndex = '10000';
+
+  const popupImage = document.createElement('img');
+  popupImage.src = './img/subtextv2.webp';
+  popupImage.style.maxWidth = '68%';
+  popupImage.style.maxHeight = '68%';
+  popupImage.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  popupImage.style.border = '1px solid #9e9f9e'; // 新增圖片邊框
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'X';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.backgroundColor = '#564d77';
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.padding = '5px 10px';
+  closeButton.style.cursor = 'pointer';
+
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(popupContainer);
+  });
+
+  popupContainer.appendChild(popupImage);
+  popupContainer.appendChild(closeButton);
+  document.body.appendChild(popupContainer);
+});
+
+
+const node7 = document.getElementById('node7');
+
+node7.addEventListener('click', () => {
+  const popupContainer = document.createElement('div');
+  popupContainer.style.position = 'fixed';
+  popupContainer.style.top = '50%';
+  popupContainer.style.left = '50%';
+  popupContainer.style.transform = 'translate(-50%, -50%)';
+  popupContainer.style.zIndex = '10000';
+
+  const popupImage = document.createElement('img');
+  popupImage.src = './img/birdv2.webp';
+  popupImage.style.maxWidth = '100%';
+  popupImage.style.maxHeight = '100%';
+  popupImage.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  popupImage.style.border = '1px solid #9e9f9e'; // 新增圖片邊框
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'X';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.backgroundColor = '#564d77';
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.padding = '5px 10px';
+  closeButton.style.cursor = 'pointer';
+
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(popupContainer);
+  });
+
+  popupContainer.appendChild(popupImage);
+  popupContainer.appendChild(closeButton);
+  document.body.appendChild(popupContainer);
+});
+
+const node8 = document.getElementById('node8');
+
+node8.addEventListener('click', () => {
+  const popupContainer = document.createElement('div');
+  popupContainer.style.position = 'fixed';
+  popupContainer.style.top = '50%';
+  popupContainer.style.left = '50%';
+  popupContainer.style.transform = 'translate(-50%, -50%)';
+  popupContainer.style.zIndex = '10000';
+
+  const popupImage = document.createElement('img');
+  popupImage.src = './img/jiaomiv2.webp';
+  popupImage.style.maxWidth = '100%';
+  popupImage.style.maxHeight = '100%';
+  popupImage.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+  popupImage.style.border = '1px solid #9e9f9e'; // 新增圖片邊框
+
+  const closeButton = document.createElement('button');
+  closeButton.textContent = 'X';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.backgroundColor = '#564d77';
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.padding = '5px 10px';
+  closeButton.style.cursor = 'pointer';
+
+  closeButton.addEventListener('click', () => {
+    document.body.removeChild(popupContainer);
+  });
+
+  popupContainer.appendChild(popupImage);
+  popupContainer.appendChild(closeButton);
+  document.body.appendChild(popupContainer);
+});
+
+
+const nodesWithShinyEffect = ['node4', 'node5', 'node6', 'node7'];
+
+nodesWithShinyEffect.forEach(nodeId => {
+  const node = document.getElementById(nodeId);
+
+  node.addEventListener('mouseenter', () => {
+    node.classList.add('shiny');
+  });
+
+  node.addEventListener('mouseleave', () => {
+    node.classList.remove('shiny');
+  });
+});
+  </script>
+
+</body>
+</html>
+
